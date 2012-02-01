@@ -1,47 +1,3 @@
-# Class representing single input
-class Input
-  attr_reader :m, :intervals
-
-  def initialize(m, intervals)
-    @m = m
-    @intervals = intervals.sort
-  end
-end
-
-
-class Interval
-  attr_reader :start, :stop
-
-  def initialize(start, stop)
-    @start = start
-    @stop = stop
-  end
-
-  include Comparable
-  def <=>(interval)
-    # more left than second interval
-    return -1 if (@start < interval.start)
-      
-    # more right 
-    return 1 if (@start > interval.start)
-    
-    #starts are probably the same!!
-    
-    #same interval
-    return 0 if (@stop == interval.stop)
-    
-    # longer interval
-    return -1 if (@stop < interval.stop)
-        
-    #shorter interval
-    return 1 if (@stop > interval.stop)
-  end
-
-  def to_s
-    @start.to_s + " " + @stop.to_s
-  end
-end
-
 # Class for solving the problem
 class Solver
   # Node for algorithm processing
@@ -116,10 +72,9 @@ class Solver
     #check if solution exists 
     act_node = find_node(root, input.m)
     if act_node.nil?
-      puts 0.to_s
-      return
+      return nil
     end
-    
+
     # rebuild solution from the tree
     way = Array.new
     while (!act_node.interval_id.nil?)
@@ -128,36 +83,6 @@ class Solver
     end
     way.reverse!
     
-    #print solution
-    puts way.size.to_s
-    way.each { |interval|
-      puts input.intervals[interval]
-    }
-    puts
+    return way
   end
-end
-
-# main program
-
-input_count = gets.to_i
-for i in (1..input_count)
-  gets # empty line
-
-  m = gets.to_i
-
-  # read and prepare intervals
-  intervals = Array.new
-  while (true) do
-    input = gets.split
-    interval_start = input[0].to_i
-    interval_stop = input[1].to_i
-    
-    break  if (interval_start == 0 && interval_stop == 0)
-      
-    intervals.push(Interval.new(interval_start, interval_stop))
-  end
-  
-  solver = Solver.new
-  solver.solve(Input.new(m, intervals))
-  puts
 end
